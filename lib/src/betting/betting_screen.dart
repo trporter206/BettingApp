@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tournament_betting/src/betting/payout_utils.dart';
+// import 'package:tournament_betting/src/betting/payout_utils.dart';
 
 import 'bet.dart';
 import 'complete_bet_screen.dart';
@@ -34,6 +34,21 @@ class _BettingScreenState extends State<BettingScreen> {
   }
 
   void _createPot() {
+    // Check if the buy-in amount is less than the minimum required.
+    if (_buyInAmount < 5.0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Minimum buy-in amount is 5 dollars.')),
+      );
+      return; // Exit the method early if the buy-in amount is not enough.
+    }
+
+    if (_buyInAmount > 100.0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Maximum buy-in amount is 100 dollars.')),
+      );
+      return; // Exit the method early if the buy-in amount is not enough.
+    }
+
     if (_bets.length < 3) {
       final teamBuyIns = <String, double>{};
       for (int i = 1; i <= _numTeams; i++) {
@@ -44,9 +59,11 @@ class _BettingScreenState extends State<BettingScreen> {
 
       setState(() {
         _bets.add(Bet(
+          title: 'Bet ${_bets.length + 1}',
           potAmount: potSize,
           participatingTeams: teamBuyIns.keys.toList(),
           buyInAmount: _buyInAmount,
+          createdAt: DateTime.now(),
         ));
       });
     } else {
@@ -55,6 +72,7 @@ class _BettingScreenState extends State<BettingScreen> {
       );
     }
   }
+
 
   void _completeBet(int index) {
     Navigator.push(
@@ -172,7 +190,25 @@ class _BettingScreenState extends State<BettingScreen> {
                           const SizedBox(height: 8.0),
                           Text('Pot Amount: \$${bet.potAmount.toStringAsFixed(2)}'),
                           const SizedBox(height: 4.0),
-                          Text('Participating Teams: ${bet.participatingTeams.join(", ")}'),
+                          const Text('Participating Teams:'),
+                          const SizedBox(height: 4.0),
+                          SizedBox(
+                            height: 50.0,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: bet.participatingTeams.length,
+                              itemBuilder: (context, teamIndex) {
+                                final teamName = bet.participatingTeams[teamIndex];
+                                final teamImageUrl = 'https://example.com/teams/$teamName.jpg';
+                                return Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: CircleAvatar(
+                                    backgroundImage: NetworkImage(teamImageUrl),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                           const SizedBox(height: 4.0),
                           Text('Buy-in Amount: \$${bet.buyInAmount.toStringAsFixed(2)}'),
                           const SizedBox(height: 8.0),

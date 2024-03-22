@@ -1,11 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:tournament_betting/src/profile/profile.dart';
 
 import 'betting/betting_screen.dart';
 import 'profile/profile_screen.dart';
 import 'settings/settings_screen.dart';
 import 'settings/settings_controller.dart';
+
+final fakeProfile = Profile(
+  userId: 'user123',
+  name: 'John Doe',
+  email: 'johndoe@example.com',
+  imageUrl: 'https://example.com/profile-image.jpg',
+  bettingHistory: [
+    'Date / Bet title / +\$50',
+    'Date / Bet title / -\$100',
+    'Date / Bet title / -\$3',
+  ],
+  isVerified: true,
+);
 
 class TournamentBettingApp extends StatelessWidget {
   const TournamentBettingApp({
@@ -56,7 +70,7 @@ class _BottomNavigationScreenState extends State<BottomNavigationScreen> {
 
   final List<Widget> _screens = [
     const BettingScreen(),
-    const ProfileScreen(),
+    ProfileScreen(profile: fakeProfile),
     const SettingsScreen(),
   ];
 

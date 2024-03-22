@@ -64,20 +64,35 @@ class _CompleteBetScreenState extends State<CompleteBetScreen> {
       ),
       body: Column(
         children: [
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              'Drag and drop the teams to order them based on the results.',
+              style: TextStyle(fontSize: 16.0),
+              textAlign: TextAlign.center,
+            ),
+          ),
           Expanded(
             child: ReorderableListView.builder(
               itemCount: _teamOrder.length,
               itemBuilder: (BuildContext context, int index) {
                 final team = _teamOrder[index];
                 final payout = _payouts[team] ?? 0.0;
+                final profileImageUrl = 'https://example.com/teams/$team.jpg'; // Replace with actual profile image URL
                 return Container(
                   key: Key('$index'),
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(team),
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(profileImageUrl),
+                        radius: 20.0,
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(child: Text(team)),
                       Text('\$${payout.toStringAsFixed(2)}'),
+                      const SizedBox(width: 8.0),
+                      const Icon(Icons.drag_handle),
                     ],
                   ),
                 );
